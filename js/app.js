@@ -1,26 +1,47 @@
-import welcome from './modules/welcome/welcome-screen';
-import game from './modules/game/game-screen';
-import result from './modules/result/result-screen';
+import Welcome from './modules/welcome/welcome-screen';
+import Game from './modules/game/game-screen';
+import Result from './modules/result/result-screen';
+import {getHash} from './location';
 
-const screen = {
-  WELCOME: welcome,
-  GAME: game,
-  RESULT: result,
+const route = {
+  '': Welcome,
+  'game': Game,
+  'result': Result,
 };
 
 class Application {
+  constructor() {
+    window.onhashchange = () => {
+      this.changeRoute();
+    };
+  }
+
+  changeRoute() {
+    const hash = getHash(location.hash);
+    const presenter = new route[hash]();
+
+    presenter.init();
+  }
+
+  init() {
+    this.changeRoute();
+  }
+
   showWelcome() {
-    screen.WELCOME.init();
+    location.hash = ``;
   }
 
   showGame() {
-    const newGame = new screen.GAME();
-    newGame.init();
+    location.hash = `game`;
   }
 
   showResult(stats, status) {
-    const newResult = new screen.RESULT(stats, status);
-    newResult.init();
+    const stateObj = JSON.stringify({
+      stats,
+      status,
+    });
+    const encode = encodeURIComponent(stateObj);
+    location.hash = `result=${encode}`;
   }
 }
 

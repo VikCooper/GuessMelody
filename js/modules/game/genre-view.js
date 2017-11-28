@@ -9,7 +9,7 @@ export default class GenreView extends AbstractView {
   get template() {
     return `
 <section class="main main--level main--level-genre">
-  <h2 class="title">Выберите инди-рок треки</h2>
+  <h2 class="title">${this.level.title}</h2>
   <form class="genre">
     ${this.level.answers.map((answer) => `
       <div class="genre-answer">

@@ -1,8 +1,8 @@
 import WelcomeView from './welcome-view';
 import {showScreen} from '../util';
-import app from '../../app';
+import App from '../../app';
 
-class WelcomePresenter {
+export default class WelcomePresenter {
   constructor() {
     this.view = new WelcomeView();
   }
@@ -11,9 +11,7 @@ class WelcomePresenter {
     showScreen(this.view);
 
     this.view.onClick = () => {
-      app.showGame();
+      App.showGame();
     };
   }
 }
-
-export default new WelcomePresenter();

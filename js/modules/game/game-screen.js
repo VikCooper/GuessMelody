@@ -1,4 +1,4 @@
-import app from '../../app';
+import App from '../../app';
 import Artist from './artist-view';
 import Genre from './genre-view';
 import Timer from './timer-view';
@@ -52,7 +52,7 @@ export default class GamePresenter {
 
     if (isEnd) {
       document.querySelector(`.main-timer`).innerHTML = ``;
-      app.showResult(this.stats, isEnd);
+      App.showResult(this.stats, isEnd);
     } else {
       this.game.level = addLevel(this.game.level);
       this.init();
@@ -65,7 +65,7 @@ export default class GamePresenter {
 
     timer.finishGame = () => {
       document.querySelector(`.main-timer`).innerHTML = ``;
-      app.showResult(this.stats, `LOSE`);
+      App.showResult(this.stats, `LOSE`);
     };
 
     timer.updateTime = (animation) => {
