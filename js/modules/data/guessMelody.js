@@ -245,7 +245,7 @@ export const addLevel = (level) => {
 export const setAnswer = (state, answer) => {
   const quest = state.levels[state.level];
   const correctAnswer = quest.answer;
-  let game;
+  let game = null;
   if (isCorrectAnswer(correctAnswer, answer)) {
     game = setCorrectAnswerToStatistic(state);
   } else {
@@ -294,4 +294,19 @@ export const updateTime = (state, time) => {
   const game = Object.assign({}, state, {time});
 
   return game;
+};
+
+export const getFormattedTimeText = (time) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+
+  return `${minutes ? `${minutes} минут ` : ``}${seconds ? `${seconds} секунд ` : ``}`;
+};
+
+export const setTime = (state) => {
+  const newState = Object.assign({}, state);
+
+  newState.time = initialGame.time - newState.time;
+
+  return newState;
 };
