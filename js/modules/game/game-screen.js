@@ -20,7 +20,8 @@ export default class GamePresenter {
   }
 
   get state() {
-    return Object.assign({}, this.game, {levels: this.levels}, {stats: this.stats});
+    const statistic = Object.assign({}, this.stats);
+    return Object.assign({}, this.game, {levels: this.levels}, {stats: statistic});
   }
 
   init() {
@@ -47,12 +48,19 @@ export default class GamePresenter {
     this.stats = state.stats;
   }
 
+  get resultStats() {
+    const time = this.game.time;
+  
+    return Object.assign({}, this.stats, {time});
+  }
+
   nextLevel() {
     const isEnd = endGame(this.state);
 
     if (isEnd) {
+      const currentTime = this.game.time;
       document.querySelector(`.main-timer`).innerHTML = ``;
-      App.showResult(this.stats, isEnd);
+      App.showResult(this.resultStats, isEnd);
     } else {
       this.game.level = addLevel(this.game.level);
       this.init();
@@ -65,7 +73,7 @@ export default class GamePresenter {
 
     timer.finishGame = () => {
       document.querySelector(`.main-timer`).innerHTML = ``;
-      App.showResult(this.stats, `LOSE`);
+      App.showResult(this.resultStats, `LOSE`);
     };
 
     timer.updateTime = (animation) => {

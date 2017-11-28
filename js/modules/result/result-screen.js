@@ -16,10 +16,11 @@ export default class ResultPresenter {
 
     this.status = params.status;
     this.stats = isEmptyParams ? {} : params.stats;
-    this.view = new view[this.status](this.stats);
   }
 
   init() {
+    this.view = new view[this.status](this.stats);
+    
     this.view.onClick = () => {
       app.showGame();
     };
