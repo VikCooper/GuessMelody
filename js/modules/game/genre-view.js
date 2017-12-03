@@ -1,21 +1,22 @@
 import AbstractView from '../view';
+import initializePlayer from '../../player';
 
 export default class GenreView extends AbstractView {
-  constructor(state) {
+  constructor(quest) {
     super();
-    this.level = state;
+    this.quest = quest;
   }
 
   get template() {
     return `
 <section class="main main--level main--level-genre">
-  <h2 class="title">${this.level.title}</h2>
+  <h2 class="title">${this.quest.question}</h2>
   <form class="genre">
-    ${this.level.answers.map((answer) => `
+    ${this.quest.answers.map((answer, i) => `
       <div class="genre-answer">
       <div class="player-wrapper"></div>
-        <input type="checkbox" name="answer" value="${answer.id}" id="a-${answer.id}">
-        <label class="genre-answer-check" for="a-${answer.id}"></label>
+        <input type="checkbox" name="answer" value="${answer.genre}" id="${i}-${answer.genre}">
+        <label ${this.quest.genre === answer.genre ? `style="background-color: red"` : ``} class="genre-answer-check" for="${i}-${answer.genre}"></label>
       </div>
       `).join(``)}
     <button class="genre-answer-send" type="submit">Ответить</button>
@@ -26,6 +27,8 @@ export default class GenreView extends AbstractView {
   bind() {
     const inputs = this.element.querySelectorAll(`input[type="checkbox"]`);
     const sendAnswer = this.element.querySelector(`.genre-answer-send`);
+    const players = this.element.querySelectorAll(`.player-wrapper`);
+    Array.from(players).forEach((player, i) => initializePlayer(player, this.quest.answers[i].src));
     sendAnswer.disabled = true;
 
     inputs.forEach((input) => {
@@ -43,7 +46,7 @@ export default class GenreView extends AbstractView {
         return Array.from(inputs).filter((input) => {
           return input.checked;
         }).map((input) => {
-          return +input.value;
+          return input.value;
         });
       };
 

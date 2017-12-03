@@ -2,15 +2,33 @@ import Welcome from './modules/welcome/welcome-screen';
 import Game from './modules/game/game-screen';
 import Result from './modules/result/result-screen';
 import {getHash} from './location';
-
-const route = {
-  '': Welcome,
-  'game': Game,
-  'result': Result,
-};
+import Model from './model';
 
 class Application {
-  constructor() {
+  init() {
+    this.model = new class extends Model {
+      get urlRead() {
+        return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/questions`;
+      }
+
+      get urlWrite() {
+        return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/oO`;
+      }
+    }();
+
+    this.model.load()
+      .then((data) => this.setup(data))
+      .then(() => this.changeRoute())
+      .catch(window.console.error);
+  }
+
+  setup(data) {
+    this.routes = {
+      '': new Welcome(),
+      'game': new Game(data.quests),
+      'result': new Result(data.stats)
+    };
+
     window.onhashchange = () => {
       this.changeRoute();
     };
@@ -18,13 +36,9 @@ class Application {
 
   changeRoute() {
     const hash = getHash(location.hash);
-    const presenter = new route[hash]();
+    const presenter = this.routes[hash];
 
     presenter.init();
-  }
-
-  init() {
-    this.changeRoute();
   }
 
   showWelcome() {
@@ -35,9 +49,9 @@ class Application {
     location.hash = `game`;
   }
 
-  showResult(stats, status) {
+  endGame(state, status) {
     const stateObj = JSON.stringify({
-      stats,
+      state,
       status,
     });
     const encode = encodeURIComponent(stateObj);

@@ -3,6 +3,7 @@ import Lose from './lose-view';
 import app from '../../app';
 import {showScreen} from '../util';
 import {getHashObject} from '../../location';
+import {setTime, getWinPersent} from '../data/guessMelody';
 
 const view = {
   'WIN': Win,
@@ -10,21 +11,37 @@ const view = {
 };
 
 export default class ResultPresenter {
-  constructor() {
-    const params = getHashObject(location.hash);
-    const isEmptyParams = !Object.keys(params).length;
-
-    this.status = params.status;
-    this.stats = isEmptyParams ? {} : params.stats;
+  constructor(stats) {
+    this.view = null;
+    this.stats = stats;
   }
 
   init() {
-    this.view = new view[this.status](this.stats);
-    
+    const params = getHashObject(location.hash);
+    const isEmptyParams = !Object.keys(params).length;
+
+    this.state = isEmptyParams ? {} : params.state;
+    this.isWin = isEmptyParams ? false : params.status;
+
+    if (this.isWin) {
+      this.state = setTime(this.state);
+      this.state = getWinPersent(this.state, this.stats);
+    }
+
+    this.view = this.setView(this.isWin);
+
     this.view.onClick = () => {
-      app.showGame();
+      app.showWelcome();
     };
 
     showScreen(this.view);
+  }
+
+  setView(isWin) {
+    if (isWin) {
+      return new view.WIN(this.state);
+    } else {
+      return new view.LOSE(this.state);
+    }
   }
 }

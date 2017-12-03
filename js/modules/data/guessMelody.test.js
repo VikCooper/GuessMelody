@@ -1,28 +1,42 @@
 import assert from 'assert';
-import {initialGame, addLevel, isCorrectAnswer, endGame} from './guessMelody';
+import {initialGame, setLives, setNextLevel} from './guessMelody';
 
 describe(`guessMelody`, () => {
-  describe(`addLevel`, () => {
-    it(`should add level`, () => {
-      assert(2, addLevel(1));
-    });
-  });
+  const game = Object.assign({}, initialGame);
+  const state = {game};
 
-  describe(`isCorrectAnswer`, () => {
-    it(`should be an error`, () => {
-      const setIncorrectAnswer = () => {
-        isCorrectAnswer([2, 3], [4]);
+  describe(`setLives`, () => {
+    it(`should set lives`, () => {
+      assert(1, setLives(state, 1).lives);
+      assert(2, setLives(state, 2).lives);
+      assert(3, setLives(state, 3).lives);
+    });
+
+    it(`shouldn't allow set negative lives`, () => {
+      const setNegativeLives = () => {
+        setLives(state, -1);
       };
-      assert.throws(setIncorrectAnswer);
+      assert.throws(setNegativeLives);
+    });
+
+    it(`should have 3 lives on start`, () => {
+      assert.equal(initialGame.lives, 3);
     });
   });
 
-  describe(`endGame`, () => {
-    it(`should be lose`, () => {
-      const testGame = Object.assign({}, initialGame);
-      testGame.lives = 0;
-      assert(`LOSE`, endGame(testGame));
+  describe(`setNextLevel`, () => {
+    it(`shouldn't allow set negative level`, () => {
+      game.level = -2;
+      assert.throws(() => setNextLevel(game));
+    });
+
+    it(`shouldn't allow set nonexistent level`, () => {
+      game.level = 12;
+      assert.throws(() => setNextLevel(game));
+    });
+
+    it(`should have 0 level on start`, () => {
+      assert.equal(initialGame.level, 0);
     });
   });
-
 });

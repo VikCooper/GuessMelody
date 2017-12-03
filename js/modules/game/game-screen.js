@@ -1,69 +1,77 @@
-import App from '../../app';
+import app from '../../app';
 import Artist from './artist-view';
 import Genre from './genre-view';
 import Timer from './timer-view';
 import {showScreen} from '../util';
-import {initialGame, levels, stats, endGame, addLevel, updateTime, setAnswer} from '../data/guessMelody';
+import {initialGame, updateTime, setAnswer, isEndOfGame, setNextLevel, preprocessToSend} from '../data/guessMelody';
 
 const view = {
   artist: Artist,
   genre: Genre,
 };
 
-export default class GamePresenter {
-  constructor() {
+export default class Game {
+  constructor(quests) {
     this.game = initialGame;
-    this.levels = levels;
-    this.stats = stats;
-
-    this.startTimer();
+    this.quests = quests;
   }
 
   get state() {
-    const statistic = Object.assign({}, this.stats);
-    return Object.assign({}, this.game, {levels: this.levels}, {stats: statistic});
+    const game = Object.assign({}, this.game);
+    const quests = Object.assign({}, this.quests);
+
+    return Object.assign({}, {game}, {quests});
   }
 
   init() {
-    const currentLevel = this.levels[this.game.level];
-    const LevelView = view[currentLevel.type];
-    const level = new LevelView(currentLevel);
+    this.game = initialGame;
+    this.startTimer();
+    this.continueGame();
+  }
 
-    level.onClick = (answer) => {
-      const newState = setAnswer(this.state, answer);
-      this.formatState(newState);
-      this.nextLevel();
+  continueGame() {
+    const QuestView = this.getQuestView();
+    const state = this.getQuestState(this.game.level);
+
+    const questView = new QuestView(state);
+
+    questView.onClick = (answer) => {
+      this.onAnswer(answer);
+      this.showNextLevel();
     };
 
-    showScreen(level);
+    showScreen(questView);
   }
 
-  formatState(state) {
-    this.game = {
-      level: state.level,
-      lives: state.lives,
-      time: state.time,
-    };
-    this.levels = state.levels;
-    this.stats = state.stats;
+  getQuestView() {
+    const quest = this.getQuestState(this.game.level);
+
+    return view[quest.type];
   }
 
-  get resultStats() {
-    const time = this.game.time;
-  
-    return Object.assign({}, this.stats, {time});
+  getQuestState(level) {
+    return this.quests[level];
   }
 
-  nextLevel() {
-    const isEnd = endGame(this.state);
+  showNextLevel() {
+    const quest = this.getQuestState(this.game.level + 1);
+    const endGame = isEndOfGame(this.game.lives, quest);
+    const isEnd = endGame[0];
 
     if (isEnd) {
-      const currentTime = this.game.time;
-      document.querySelector(`.main-timer`).innerHTML = ``;
-      App.showResult(this.resultStats, isEnd);
+      const endType = endGame[1];
+      this.stopTimer();
+
+      if (endType === `lives`) {
+        this.endGame(false);
+      } else if (endType === `quests`) {
+        this.endGame(true);
+      } else {
+        throw new TypeError(`Нет типа ${endType}`);
+      }
     } else {
-      this.game.level = addLevel(this.game.level);
-      this.init();
+      this.game = setNextLevel(this.state);
+      this.continueGame();
     }
   }
 
@@ -72,8 +80,8 @@ export default class GamePresenter {
     const container = document.querySelector(`.main-timer`);
 
     timer.finishGame = () => {
-      document.querySelector(`.main-timer`).innerHTML = ``;
-      App.showResult(this.resultStats, `LOSE`);
+      this.stopTimer();
+      this.endGame(false);
     };
 
     timer.updateTime = (animation) => {
@@ -83,10 +91,30 @@ export default class GamePresenter {
     container.appendChild(timer.element);
   }
 
+  stopTimer() {
+    document.querySelector(`.main-timer`).innerHTML = ``;
+  }
+
   updateTime(newTime) {
     const newState = updateTime(this.state, newTime);
 
-    this.formatState(newState);
+    this.updateState(newState);
   }
 
+  onAnswer(answer) {
+    const newState = setAnswer(this.state, answer);
+
+    this.updateState(newState);
+  }
+
+  updateState(state) {
+    this.game = state.game;
+  }
+
+  endGame(status) {
+    const data = preprocessToSend(this.game);
+
+    app.model.send(data);
+    app.endGame(this.game, status);
+  }
 }

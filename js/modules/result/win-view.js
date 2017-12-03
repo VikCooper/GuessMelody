@@ -1,10 +1,10 @@
 import AbstractView from '../view';
-import {setTime, getFormattedTimeText} from '../data/guessMelody';
+import {getFormattedTimeText} from '../data/guessMelody';
 
 export default class WinView extends AbstractView {
   constructor(stats) {
     super();
-    this.stats = setTime(stats);
+    this.stats = stats;
   }
 
   get template() {
@@ -14,7 +14,7 @@ export default class WinView extends AbstractView {
 <section class="main main--result">
   <h2 class="title">Вы настоящий меломан!</h2>
   <div class="main-stat">За&nbsp;${timeText}<br>вы&nbsp;отгадали ${this.stats.rightAnswers}&nbsp;мелодии</div>
-  <span class="main-comparison">Это&nbsp;лучше чем у&nbsp;${this.stats.otherPlayersPercent}%&nbsp;игроков</span>
+  <span class="main-comparison">Это&nbsp;лучше чем у&nbsp;${this.stats.winPersent}%&nbsp;игроков</span>
   <span role="button" tabindex="0" class="main-replay">Сыграть ещё раз</span>
 </section>`.trim();
   }
