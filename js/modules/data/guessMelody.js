@@ -116,6 +116,9 @@ export const getWinPersent = (state, stats) => {
   const currentResultIndex = sortStats.findIndex((item) => item === newStat);
   const betterPlaceThanOther = (sortStats.length - 1) - currentResultIndex;
   const winPersent = Math.round(betterPlaceThanOther / (sortStats.length - 1) * 100);
+  if (Number.isNaN(winPersent)) {
+    winPersent = 100;
+  }
   const newState = Object.assign({}, state, {winPersent});
 
   return newState;
