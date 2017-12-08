@@ -31,9 +31,13 @@ export default class ArtistView extends AbstractView {
   bind() {
     const answers = this.element.querySelectorAll(`.main-answer-r`);
     const player = this.element.querySelector(`.player-wrapper`);
-    initializePlayer(player, this.quest.src, true);
+    const destroyPlayer = initializePlayer(player, this.quest.src, true);
+
     Array.from(answers).forEach((answer) => {
-      answer.onclick = (e) => this.onClick(e.target.value === `true`);
+      answer.onclick = (e) => {
+        this.onClick(e.target.value === `true`);
+        destroyPlayer();
+      };
     });
   }
 
