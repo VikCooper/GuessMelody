@@ -40,11 +40,11 @@ export const setNextLevel = (state) => {
 
 export const isEndOfGame = (lives, NextQuest) => {
   if (lives === 0) {
-    return [true, `lives`];
+    return `lives`;
   } else if (!NextQuest) {
-    return [true, `quests`];
+    return `quests`;
   } else {
-    return [false];
+    return `not end`;
   }
 };
 
@@ -96,15 +96,14 @@ export const setTime = (state) => {
 };
 
 export const getWinPersent = (state, stats) => {
-  let newStatCounter = stats.length - 1; // stats id
-
-  stats.push({
-    id: newStatCounter,
+  const newStat = {
     time: state.time,
     answers: state.rightAnswers,
-  });
+  };
 
-  const newStats = stats
+  stats.push(newStat);
+
+  const sortStats = stats
     .sort((a, b) => b.answers - a.answers)
     .sort((a, b) => {
       if (a.answers === b.answers) {
@@ -114,9 +113,9 @@ export const getWinPersent = (state, stats) => {
       }
     });
 
-  const currentResultIndex = newStats.findIndex((item) => item.id === newStatCounter);
-  const betterPlaceThanOther = (newStats.length - 1) - currentResultIndex;
-  const winPersent = Math.round(betterPlaceThanOther / (newStats.length - 1) * 100);
+  const currentResultIndex = sortStats.findIndex((item) => item === newStat);
+  const betterPlaceThanOther = (sortStats.length - 1) - currentResultIndex;
+  const winPersent = Math.round(betterPlaceThanOther / (sortStats.length - 1) * 100);
   const newState = Object.assign({}, state, {winPersent});
 
   return newState;

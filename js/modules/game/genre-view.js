@@ -28,16 +28,14 @@ export default class GenreView extends AbstractView {
     const inputs = this.element.querySelectorAll(`input[type="checkbox"]`);
     const sendAnswer = this.element.querySelector(`.genre-answer-send`);
     const players = this.element.querySelectorAll(`.player-wrapper`);
-    Array.from(players).forEach((player, i) => initializePlayer(player, this.quest.answers[i].src));
+    const audio = [];
     sendAnswer.disabled = true;
+
+    Array.from(players).forEach((player, i) => audio.push(initializePlayer(player, this.quest.answers[i].src)));
 
     inputs.forEach((input) => {
       input.onchange = () => {
-        if (input.checked) {
-          sendAnswer.disabled = false;
-        } else {
-          sendAnswer.disabled = true;
-        }
+        sendAnswer.disabled = !input.checked;
       };
     });
 
@@ -57,6 +55,9 @@ export default class GenreView extends AbstractView {
       });
 
       sendAnswer.disabled = true;
+
+      audio.forEach((destroyAudio) => destroyAudio());
+
       this.onClick(answers);
     };
   }

@@ -56,19 +56,18 @@ export default class Game {
   showNextLevel() {
     const quest = this.getQuestState(this.game.level + 1);
     const endGame = isEndOfGame(this.game.lives, quest);
-    const isEnd = endGame[0];
 
-    if (isEnd) {
-      const endType = endGame[1];
+    if (endGame !== `not end`) {
       this.stopTimer();
 
-      if (endType === `lives`) {
+      if (endGame === `lives`) {
         this.endGame(false);
-      } else if (endType === `quests`) {
-        this.endGame(true);
-      } else {
-        throw new TypeError(`Нет типа ${endType}`);
       }
+
+      if (endGame === `quests`) {
+        this.endGame(true);
+      }
+
     } else {
       this.game = setNextLevel(this.state);
       this.continueGame();
