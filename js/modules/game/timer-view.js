@@ -1,5 +1,5 @@
-import AbstractView from '../helpers/abstract-view';
-import {animationObj} from '../helpers/animate';
+import AbstractView from '../view';
+import {animationObj} from '../../animate';
 
 export default class Timer extends AbstractView {
   constructor(state) {
