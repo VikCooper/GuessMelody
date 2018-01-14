@@ -1,5 +1,5 @@
 import WelcomeView from './welcome-view';
-import {showScreen} from '../util';
+import {showScreen, initializeTimer} from '../util';
 import App from '../../app';
 
 export default class WelcomePresenter {
@@ -8,6 +8,7 @@ export default class WelcomePresenter {
   }
 
   init() {
+    initializeTimer();
     showScreen(this.view);
 
     this.view.onClick = () => {
