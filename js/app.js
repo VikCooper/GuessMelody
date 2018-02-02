@@ -12,14 +12,18 @@ class Application {
       }
 
       get urlWrite() {
-        return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/oO`;
+        return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/vikcooper`;
       }
     }();
 
-    this.model.load()
-      .then((data) => this.setup(data))
+    this.load()
       .then(() => this.changeRoute())
       .catch(window.console.error);
+  }
+
+  load() {
+    return this.model.load()
+    .then((data) => this.setup(data));
   }
 
   setup(data) {

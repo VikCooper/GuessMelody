@@ -101,10 +101,8 @@ export const getWinPersent = (state, stats) => {
     answers: state.rightAnswers,
   };
 
-  stats.push(newStat);
-
   const sortStats = stats
-    .sort((a, b) => b.answers - a.answers)
+    .slice()
     .sort((a, b) => {
       if (a.answers === b.answers) {
         return a.time - b.time;
@@ -113,7 +111,7 @@ export const getWinPersent = (state, stats) => {
       }
     });
 
-  const currentResultIndex = sortStats.findIndex((item) => item === newStat);
+  const currentResultIndex = sortStats.findIndex((item) => item.time === newStat.time && item.answers === newStat.answers);
   const betterPlaceThanOther = (sortStats.length - 1) - currentResultIndex;
   let winPersent = Math.round(betterPlaceThanOther / (sortStats.length - 1) * 100);
   if (Number.isNaN(winPersent)) {

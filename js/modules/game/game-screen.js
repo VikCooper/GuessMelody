@@ -114,6 +114,7 @@ export default class Game {
     const data = preprocessToSend(this.game);
 
     app.model.send(data);
+    app.load();
     app.endGame(this.game, status);
   }
 }
