@@ -3,7 +3,7 @@ export default class Model {
     throw new Error(`Abstract method. Define the URL for model.`);
   }
 
-  get urlWrite() {
+  get urlStats() {
     throw new Error(`Abstract method. Define the URL for model.`);
   }
 
@@ -26,7 +26,7 @@ export default class Model {
   }
 
   getStats() {
-    return window.fetch(`https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/vikcooper`)
+    return window.fetch(this.urlStats)
       .then((response) => response.json())
       .catch((reject) => []);
   }
@@ -34,7 +34,7 @@ export default class Model {
   send(data) {
     const body = JSON.stringify(data);
 
-    return window.fetch(`https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/vikcooper`, {
+    return window.fetch(this.urlStats, {
       body,
       method: `POST`,
       headers: {

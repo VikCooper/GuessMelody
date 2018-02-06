@@ -1,6 +1,6 @@
 export const initializeTimer = () => {
   document.querySelector(`.main-timer`).innerHTML = ``;
-}
+};
 
 export const createElement = (template) => {
   const outer = document.createElement(`template`);

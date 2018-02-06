@@ -11,7 +11,7 @@ class Application {
         return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/questions`;
       }
 
-      get urlWrite() {
+      get urlStats() {
         return `https://intensive-ecmascript-server-btfgudlkpi.now.sh/guess-melody/stats/vikcooper`;
       }
     }();
@@ -23,7 +23,7 @@ class Application {
 
   load() {
     return this.model.load()
-    .then((data) => this.setup(data));
+      .then((data) => this.setup(data));
   }
 
   setup(data) {
