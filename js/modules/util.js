@@ -1,4 +1,4 @@
-export const initializeTimer = () => {
+export const resetTimer = () => {
   document.querySelector(`.main-timer`).innerHTML = ``;
 };
 

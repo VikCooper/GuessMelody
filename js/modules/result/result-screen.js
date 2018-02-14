@@ -4,6 +4,7 @@ import app from '../../app';
 import {showScreen} from '../util';
 import {getHashObject} from '../../location';
 import {setTime, getWinPersent} from '../data/guessMelody';
+import {resetTimer} from '../util';
 
 const view = {
   'WIN': Win,
@@ -17,6 +18,7 @@ export default class ResultPresenter {
   }
 
   init() {
+    resetTimer();
     const params = getHashObject(location.hash);
     const isEmptyParams = !Object.keys(params).length;
 

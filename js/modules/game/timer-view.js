@@ -4,7 +4,6 @@ import {animationObj} from '../../animate';
 export default class Timer extends AbstractView {
   constructor(state) {
     super();
-
     this.time = state;
   }
 
@@ -26,15 +25,7 @@ export default class Timer extends AbstractView {
     `.trim();
   }
 
-  get element() {
-    if (!this._element) {
-      this._element = this.render();
-      this.initializeCountdown();
-    }
-    return this._element;
-  }
-
-  initializeCountdown() {
+  bind() {
     const element = this.element.querySelector(`.timer-line`);
     const radius = parseInt(element.getAttributeNS(null, `r`), 10);
     const timer = this.element.querySelector(`.timer-value`);

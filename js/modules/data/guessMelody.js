@@ -98,26 +98,30 @@ export const setTime = (state) => {
 export const getWinPersent = (state, stats) => {
   const newStat = {
     time: state.time,
-    answers: state.rightAnswers,
+    answers: state.rightAnswers
   };
 
-  const sortStats = stats
-    .slice()
-    .sort((a, b) => {
-      if (a.answers === b.answers) {
-        return a.time - b.time;
-      } else {
-        return b.answers - a.answers;
-      }
-    });
+  const sortStats = stats.slice();
+  sortStats.push(newStat);
+  sortStats.sort((a, b) => {
+    if (a.answers === b.answers) {
+      return a.time - b.time;
+    } else {
+      return b.answers - a.answers;
+    }
+  });
 
-  const currentResultIndex = sortStats.findIndex((item) => item.time === newStat.time && item.answers === newStat.answers);
-  const betterPlaceThanOther = (sortStats.length - 1) - currentResultIndex;
-  let winPersent = Math.round(betterPlaceThanOther / (sortStats.length - 1) * 100);
+  const currentResultIndex = sortStats.findIndex(item => item === newStat);
+  const betterPlaceThanOther = sortStats.length - 1 - currentResultIndex;
+  let winPersent = Math.round(
+    betterPlaceThanOther / (sortStats.length - 1) * 100
+  );
+
   if (Number.isNaN(winPersent)) {
     winPersent = 100;
   }
-  const newState = Object.assign({}, state, {winPersent});
+
+  const newState = Object.assign({}, state, { winPersent });
 
   return newState;
 };
